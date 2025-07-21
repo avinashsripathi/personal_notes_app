@@ -1,0 +1,1 @@
+export {}; // prevents TS1208 error
