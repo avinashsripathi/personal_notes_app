@@ -1,4 +1,4 @@
-import React from "react"; // ✅ Required in some setups
+import React from "react"; //  Required in some setups
 import { Navigate } from "react-router-dom";
 
 interface Props {
@@ -12,7 +12,7 @@ function PrivateRoute({ children }: Props) {
     return <Navigate to="/" replace />;
   }
 
-  return <>{children}</>; // ✅ Wrap in fragment
+  return <>{children}</>; //  Wrap in fragment
 }
 
 export default PrivateRoute;
