@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
+// ✅ Yup validation schema
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
   content: yup.string().required("Content is required"),
@@ -22,6 +23,21 @@ function CreateNote() {
 
   const onSubmit = async (data: any) => {
     try {
+      // 🔍 Check for duplicate title before creating
+      const checkRes = await axios.get(
+        `http://localhost:5000/api/notes/check-title?title=${encodeURIComponent(
+          data.title
+        )}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (checkRes.data.exists) {
+        toast.error("⚠️ A note with this title already exists.");
+        return;
+      }
+
       const noteData = {
         ...data,
         isPinned: false,

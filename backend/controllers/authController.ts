@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import Note from "../models/Note";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -51,5 +52,24 @@ export const loginUser = async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error("❌ Login error:", err.message);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// ✅  Get user profile with notes count
+export const getProfile = async (req: any, res: Response) => {
+  try {
+    const user = await User.findById(req.user).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const notesCount = await Note.countDocuments({ userId: req.user });
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      noteCount: notesCount,
+    });
+  } catch (err: any) {
+    console.error("❌ Profile fetch error:", err.message);
+    res.status(500).json({ message: "Failed to fetch profile" });
   }
 };

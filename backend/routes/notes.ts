@@ -14,6 +14,30 @@ router.get("/", authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+// ✅ CHECK FOR DUPLICATE TITLE — moved above :id route
+router.get("/check-title", authenticateToken, async (req: AuthRequest, res) => {
+  try {
+    const { title } = req.query;
+    if (!title) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    const existingNote = await Note.findOne({
+      userId: req.user,
+      title: title.toString().trim(),
+    });
+
+    if (existingNote) {
+      return res.json({ exists: true, noteId: existingNote._id });
+    } else {
+      return res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error("Check title error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 // ✅ GET a single note by ID
 router.get("/:id", authenticateToken, async (req: AuthRequest, res) => {
   const note = await Note.findOne({ _id: req.params.id, userId: req.user });

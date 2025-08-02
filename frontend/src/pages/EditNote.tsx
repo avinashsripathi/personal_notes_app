@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { toast } from "react-toastify"; // ✅ import toast
+import { toast } from "react-toastify";
 
 // ✅ Validation Schema
 const schema = yup.object({
@@ -53,6 +53,21 @@ function EditNote() {
 
   const onSubmit = async (data: FormData) => {
     try {
+      // ✅ Check for duplicate title (excluding the current note)
+      const checkRes = await axios.get(
+        `http://localhost:5000/api/notes/check-title?title=${encodeURIComponent(
+          data.title
+        )}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (checkRes.data.exists && checkRes.data.noteId !== id) {
+        toast.error("⚠️ A note with this title already exists.");
+        return;
+      }
+
       await axios.put(`http://localhost:5000/api/notes/${id}`, data, {
         headers: {
           Authorization: `Bearer ${token}`,

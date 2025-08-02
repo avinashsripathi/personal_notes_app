@@ -15,4 +15,4 @@ function PrivateRoute({ children }: Props) {
   return <>{children}</>; //  Wrap in fragment
 }
 
-export default PrivateRoute;
+export default PrivateRoute; 

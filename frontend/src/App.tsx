@@ -5,9 +5,12 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CreateNote from "./pages/CreateNote";
 import EditNote from "./pages/EditNote";
+import ViewNote from "./pages/ViewNote";           
+import NotFound from "./pages/NotFound";           
 import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -44,12 +47,30 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/note/:id"
+            element={
+              <PrivateRoute>
+                <ViewNote />
+              </PrivateRoute>
+            }
+          />
 
-          {/* Redirect unknown paths */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* ✅ Profile Route */}
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+
+          {/* ❌ 404 Page */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
 
-        {/* ✅ Toast container at the bottom */}
+        {/* ✅ Toast container */}
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </Router>
